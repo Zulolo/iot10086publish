@@ -41,16 +41,22 @@ int32_t nUnixSocketConn(const char *pNRF905ServerName)
 	int32_t nLen;
 	struct sockaddr_un tSocketAddrUn;
 
+	printf("Try to connect server socket.\n");
 	if ((nConnectSocketFd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){     /* create a UNIX domain stream socket */
+		printf("Create UNIX socket failed with error %d.\n", errno);
+		NRF905D_LOG_ERR("Create UNIX socket failed with error %d.", errno);
 		return(-1);
 	}
 	memset(&tSocketAddrUn, 0, sizeof(tSocketAddrUn));            /* fill socket address structure with our address */
 	tSocketAddrUn.sun_family = AF_UNIX;
 	sprintf(tSocketAddrUn.sun_path, "scktmp%05d", getpid());
 	nLen = offsetof(struct sockaddr_un, sun_path) + strlen(tSocketAddrUn.sun_path);
+	printf("Try to unlink sun_path.\n");
 	unlink(tSocketAddrUn.sun_path);               /* in case it already exists */
+	printf("Ulink tSocketAddrUn.sun_path OK.\n");
 	if (bind(nConnectSocketFd, (struct sockaddr *)&tSocketAddrUn, nLen) < 0) {
 		close(nConnectSocketFd);
+		printf("Bind socket failed with error %d.", errno);
 		NRF905D_LOG_ERR("Bind socket failed during client connect with error %d.", errno);
 		return (-1);
 	}else{
@@ -61,6 +67,7 @@ int32_t nUnixSocketConn(const char *pNRF905ServerName)
 		nLen = offsetof(struct sockaddr_un, sun_path) + strlen(pNRF905ServerName);
 		if (connect(nConnectSocketFd, (struct sockaddr *)&tSocketAddrUn, nLen) < 0)   {
 			close(nConnectSocketFd);
+			printf("Connect server failed with error %d.", errno);
 			NRF905D_LOG_ERR("Connect server failed with error %d.", errno);
 			return (-1);
 		}else{
@@ -107,6 +114,7 @@ int main(void) {
 				printf("Receive from unix domain socket error with code:%d.", errno);
 				NRF905D_LOG_ERR("Receive from unix domain socket error with code:%d.", errno);
 			} else {
+				printf("Socket %d received one message from nRF905 server.\n", nConnectedSocketFd);
 				memcpy(&tSensorData, unACK_RX_Payload + 1, sizeof(tSensorData));
 				/* get a curl handle */
 				pCurl = curl_easy_init();
