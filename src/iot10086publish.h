@@ -26,7 +26,7 @@ typedef struct
 	uint16_t	unAirQuality;			//
 } SENSOR_DATA_T;
 
-#define DEVICE_API_URL				"http://api.heclouds.com/devices/3206005/datapoints?type=3"
+#define DEVICE_API_URL				"http://things.ubidots.com/api/v1.6/devices/smart_home_xm/"
 static uint8_t unNeedtoClose = NRF905_FALSE;
 #else
 #define __IOT10086PUBLISH_EXTERN__			extern

@@ -112,7 +112,7 @@ int main(void) {
 	curl_easy_setopt(pCurl, CURLOPT_URL, DEVICE_API_URL);
 	pHttpHeaders = NULL;
 	pHttpHeaders = curl_slist_append(pHttpHeaders, "Content-Type: application/json");
-	pHttpHeaders = curl_slist_append(pHttpHeaders, "api-key:PPsmfd=F0gDlwdZLgGsrVEAsIeY=");
+	pHttpHeaders = curl_slist_append(pHttpHeaders, "X-Auth-Token:ENc7C7vHZPBcSEj3L4HZ9oZd7ENGAd");
 	curl_easy_setopt(pCurl, CURLOPT_HTTPHEADER, pHttpHeaders);
 
 	while (NRF905_FALSE == unNeedtoClose){
@@ -130,7 +130,7 @@ int main(void) {
 //				}
 				memcpy(&tSensorData, unACK_RX_Payload + 1, sizeof(tSensorData));
 
-				sprintf(cPostData, "{\"Temperature\":%.01f,\"Humidity\":%.01f,\"AirQuality\":%u}",
+				sprintf(cPostData, "{\"temperature\":%.01f,\"humidity\":%.01f,\"air-quality\":%u}",
 						(double)(tSensorData.nTemperature) / 10,
 						(double)(tSensorData.unHumidity) / 10,
 						tSensorData.unAirQuality);
